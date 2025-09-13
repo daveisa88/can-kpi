@@ -1,0 +1,695 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Renommage — KPI, Attachements & Avancement prod</title>
+    <link rel="icon" type="image/png" href="/assets/can-kpi.png">
+    <link rel="apple-touch-icon" href="/assets/can-kpi.png">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --muted: #94a3b8;
+            --text: #e5e7eb;
+            --acc: #22c55e;
+            --warn: #f59e0b;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, Segoe UI, Roboto, Arial;
+            background: linear-gradient(120deg,#0b1020,#0d1b2a);
+            color: var(--text);
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 26px auto;
+            padding: 0 16px;
+        }
+
+        h1 {
+            font-size: 22px;
+            letter-spacing: .4px;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: rgba(17,24,39,.85);
+            border: 1px solid rgba(148,163,184,.14);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+            backdrop-filter: blur(4px);
+            margin-bottom: 16px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 210px 1fr;
+            gap: 14px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(148,163,184,.25);
+            background: #0b1220;
+            color: var(--text);
+            outline: none;
+        }
+
+        textarea {
+            min-height: 96px;
+            resize: vertical;
+        }
+
+            input:focus-visible, select:focus-visible, textarea:focus-visible {
+                border-color: #38bdf8;
+                box-shadow: 0 0 0 3px rgba(56,189,248,.2);
+            }
+
+        input[type="date"] {
+            color-scheme: light;
+        }
+
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                filter: invert(1) brightness(1.4) contrast(1.2);
+                opacity: .95;
+                cursor: pointer;
+            }
+
+            input[type="date"]::-webkit-datetime-edit,
+            input[type="date"]::-webkit-datetime-edit-text,
+            input[type="date"]::-webkit-datetime-edit-month-field,
+            input[type="date"]::-webkit-datetime-edit-day-field,
+            input[type="date"]::-webkit-datetime-edit-year-field {
+                color: #e5e7eb;
+            }
+
+        button {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(148,163,184,.25);
+            background: #0b1220;
+            color: var(--text);
+            cursor: pointer;
+        }
+
+            button:hover {
+                filter: brightness(1.05);
+            }
+
+            button.primary {
+                background: var(--acc);
+                border-color: #16a34a;
+                color: #041b0c;
+                font-weight: 600;
+            }
+
+            button.warn {
+                background: var(--warn);
+                border-color: #b45309;
+                color: #1f1302;
+                font-weight: 600;
+            }
+
+            button:disabled {
+                opacity: .5;
+                cursor: not-allowed;
+            }
+
+        .hint {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 14px;
+            font-size: 13px;
+        }
+
+        th, td {
+            border: 1px solid rgba(148,163,184,.2);
+            padding: 8px 10px;
+        }
+
+        th {
+            background: #0b1220;
+        }
+
+        #status {
+            font-size: 13px;
+            color: var(--muted);
+            margin-left: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #122033;
+            border: 1px solid rgba(148,163,184,.25);
+            margin-left: 6px;
+            font-size: 12px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 140px 140px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .row-inline {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .chip {
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,.25);
+            background: #0b1220;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1>
+            Renommage — KPI, Attachements & Avancement prod
+            <a href="/docs/mode-emploi.html" target="_blank"
+               style="display:inline-block;margin-left:8px;padding:8px 12px;border-radius:10px;
+              background:#ff7a00;color:#2b0e00;border:1px solid #ff6a00;font-weight:600;text-decoration:none;">
+                📖 Aide
+            </a>
+        </h1>
+
+        <div class="card">
+            <div class="row">
+                <label>Dossier</label>
+                <div class="row-inline">
+                    <button id="pickDir">Choisir un dossier…</button>
+                    <span id="folderName" class="badge">Aucun</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <label>Mode</label>
+                <div class="row-inline" style="gap:10px; flex-wrap:wrap;">
+                    <select id="mode" style="min-width:320px;">
+                        <optgroup label="Modes intégrés">
+                            <option value="kpi">KPI factu</option>
+                            <option value="att">export_attachements</option>
+                            <option value="prod8">Avancement prod (8 régions)</option>
+                            <option value="lot">LOT FLASH Semaine (xlsm)</option>
+                            <option value="custom">Personnalisé (patron libre)</option>
+                        </optgroup>
+                        <optgroup label="Modes personnalisés" id="groupCustom"></optgroup>
+                    </select>
+                    <input id="modeName" type="text" placeholder="Nom du mode (ex : Mon patron)" style="flex:1 1 260px;">
+                    <button id="saveMode">Enregistrer comme mode</button>
+                    <button id="deleteMode" class="warn" title="Supprimer le mode personnalisé sélectionné">Supprimer</button>
+                </div>
+                <div class="hint" style="grid-column:2/3;margin-top:-6px;">
+                    Enregistre patron/extension/index/heure <b>et la correspondance Index→Libellé</b> comme un mode personnalisé (localStorage).
+                </div>
+            </div>
+
+            <div class="row">
+                <label>Heure cible (24 h)</label>
+                <select id="hourSel"></select>
+                <div class="muted" style="grid-column:2/3; margin-top:-6px;">
+                    Vide = auto. Pour CVL/DOE/IDF/PRM détectés, l’heure est retirée du nom même si elle est choisie.
+                </div>
+            </div>
+
+            <div class="row">
+                <label>Date</label>
+                <input id="date" type="date">
+            </div>
+
+            <div class="row">
+                <label>Extensions (filtre)</label>
+                <input id="exts" type="text" value=".csv" placeholder=".csv (vide = toutes)">
+            </div>
+
+            <div class="row">
+                <label>Patron (custom)</label>
+                <input id="pattern" type="text" placeholder="Ex : Avancement prod {REGION} {DATE:dd.MM} {HOUR}h — ou — export_attachements{LABEL}{DATE:ddMM}">
+            </div>
+
+            <div class="row">
+                <label>Insérer un jeton</label>
+                <div class="row-inline">
+                    <select id="tokenSel" style="min-width:280px;">
+                        <option value="">— choisir un jeton —</option>
+                        <optgroup label="Date">
+                            <option value="{DATE:dd.MM}">{DATE:dd.MM}</option>
+                            <option value="{DATE:ddMM}">{DATE:ddMM}</option>
+                            <option value="{WEEK}">{WEEK}</option>
+                        </optgroup>
+                        <optgroup label="Index">
+                            <option value="{INDEX}">{INDEX}</option>
+                            <option value="{INDEX:3}">{INDEX:3}</option>
+                            <option value="{LABEL}">{LABEL} (depuis Index→Libellé)</option>
+                        </optgroup>
+                        <optgroup label="Divers">
+                            <option value="{REGION}">{REGION}</option>
+                            <option value="{HOUR}">{HOUR}</option>
+                            <option value="{LOT}">{LOT}</option>
+                            <option value="{NUM}">{NUM}</option>
+                            <option value="{NAME}">{NAME}</option>
+                            <option value="{EXT}">{EXT}</option>
+                        </optgroup>
+                    </select>
+                    <button id="insertToken">Insérer</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <label>Index départ</label>
+                <input id="start" type="number" min="1" value="1">
+            </div>
+
+            <div class="row">
+                <label>Index → Libellé (optionnel)</label>
+                <div>
+                    <textarea id="mapText" placeholder="Une ligne par correspondance :&#10;1=AURA&#10;2=Corse&#10;3=CVL&#10;4=DOE&#10;5=IDF&#10;6=PRM"></textarea>
+                    <div id="mapPreview" class="chips" aria-live="polite"></div>
+                    <div class="hint">
+                        Utilise <code>{LABEL}</code> dans ton patron pour insérer la valeur du libellé correspondant à l’index courant.
+                        Pour <code>export_attachements</code>, cette table remplace l’ordre AURA/Corse/CVL/DOE/IDF/PRM.
+                    </div>
+                </div>
+            </div>
+
+            <div class="hint">
+                Tokens : <code>{DATE:dd.MM}</code> · <code>{DATE:ddMM}</code> · <code>{WEEK}</code> ·
+                <code>{INDEX}</code>/<code>{INDEX:3}</code> · <code>{LABEL}</code> · <code>{REGION}</code> · <code>{HOUR}</code> ·
+                <code>{LOT}</code> · <code>{NUM}</code> · <code>{NAME}</code> · <code>{EXT}</code>.
+                L’extension d’origine est ajoutée automatiquement (ne mets pas “.csv/.xlsx/.xlsm” dans le patron).
+            </div>
+
+            <hr style="border-color:#223; opacity:.3; margin:14px 0;">
+
+            <div class="row-inline" style="gap:10px;">
+                <button id="preview">Aperçu</button>
+                <button id="apply" class="primary" disabled>Renommer</button>
+                <button id="undo" class="warn" disabled>Annuler (Undo)</button>
+                <span id="status"></span>
+            </div>
+
+            <table id="tbl" style="display:none;">
+                <thead><tr><th>Fichier actuel</th><th>Nouveau nom</th></tr></thead>
+                <tbody></tbody>
+            </table>
+
+            <hr style="border-color:#223; opacity:.3; margin:14px 0;">
+
+            <div class="card" style="background:#0c1324;border-color:#1f2a44;">
+                <h3 style="margin:0 0 6px 0; font-size:16px;">Créer (via le patron)</h3>
+                <div class="row">
+                    <label>Liste (optionnel)</label>
+                    <textarea id="createList" placeholder="Une ligne = un nom pour {NAME}. Laisse vide pour créer N fichiers par index.&#10;Ex : AURA&#10;Corse&#10;CVL ..."></textarea>
+                </div>
+                <div class="row">
+                    <label>Quantité / départ</label>
+                    <div class="row-inline">
+                        <input id="createCount" type="number" min="1" value="1" style="max-width:140px">
+                        <span class="muted">Utilisé seulement si la liste est vide. On applique {INDEX} (et {LABEL} si défini) à partir de “Index départ”.</span>
+                    </div>
+                </div>
+                <div class="row-inline" style="gap:10px;">
+                    <button id="createBtn">Créer les fichiers (vides)</button>
+                    <button id="createPreviewBtn">Aperçu création</button>
+                    <span class="muted">Les fichiers sont créés dans le dossier choisi, selon le patron + la date/heure sélectionnées.</span>
+                </div>
+                <table id="createTbl" style="display:none; margin-top:8px;">
+                    <thead><tr><th>Nom à créer</th><th>Statut</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+const RE_KPI = /^_?KPI factu .*\\.csv$/i;
+const RE_ATT_NUM = /^export_attachements \\((\\d+)\\)\\.csv$/i;
+const RE_ATT_PLAIN = /^export_attachements\\.csv$/i;
+const REG8 = ['AURA','Corse','CVL','DOE','IDF','PRM','Lot2 PDL','74/01'];
+const REG8_MATCHERS = [/AURA/i,/Corse/i,/CVL/i,/DOE/i,/IDF/i,/PRM/i,/(Lot\\s*2\\s*PDL|PDL\\s*Lot\\s*2|Lot2\\s*PDL)/i,/(74\\/?01)/i];
+const NO_HOUR = new Set(['CVL','DOE','IDF','PRM']);
+const RE_NUM = /Avancement\\s*prod\\s*(\\d{2})\\b/i;
+const RE_HOUR = /\\b(10|12|14|16|18)h\\b/i;
+const NEXT = {10:12,12:14,14:16,16:18,18:10};
+
+function z2(n){return String(n).padStart(2,'0');}
+function pad(num,width){return String(num).padStart(width||2,'0');}
+function formatDate(date,fmt){
+  return fmt.replace(/yyyy/g,date.getFullYear())
+            .replace(/MM/g,z2(date.getMonth()+1))
+            .replace(/dd/g,z2(date.getDate()))
+            .replace(/HH/g,z2(date.getHours()))
+            .replace(/mm/g,z2(date.getMinutes()))
+            .replace(/ss/g,z2(date.getSeconds()));
+}
+function isoWeek(d){
+  const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
+  const day=date.getUTCDay()||7; date.setUTCDate(date.getUTCDate()+4-day);
+  const yearStart=new Date(Date.UTC(date.getUTCFullYear(),0,1));
+  return Math.ceil((((date-yearStart)/86400000)+1)/7);
+}
+function sanitize(s){ return s.replace(/[\\\\/:*?"<>|]/g,'-'); }
+function applyTokens(pattern,ctx){
+  let out=pattern;
+  out=out.replace(/\\{DATE:([^}]+)\\}/g,(_,f)=>sanitize(formatDate(ctx.date,f)));
+  out=out.replace(/\\{WEEK\\}/g,String(ctx.week??''));
+  out=out.replace(/\\{INDEX(?::(\\d+))?\\}/g,(_,w)=>pad(ctx.index, w?parseInt(w,10):2));
+  out=out.replace(/\\{LABEL\\}/g, sanitize(ctx.label||""));
+  out=out.replace(/\\{REGION\\}/g,sanitize(ctx.region||""));
+  out=out.replace(/\\{HOUR\\}/g,sanitize(String(ctx.hour??"")));
+  out=out.replace(/\\{LOT\\}/g,sanitize(String(ctx.lot??"")));
+  out=out.replace(/\\{NUM\\}/g,sanitize(String(ctx.num??"")));
+  out=out.replace(/\\{NAME\\}/g,sanitize(ctx.origName||""));
+  out=out.replace(/\\{EXT\\}/g,String(ctx.ext||"").replace(/^\\./,""));
+  return out;
+}
+async function* iterateFiles(dir){ for await(const [n,h] of dir.entries()) if(h.kind==="file") yield {name:n,handle:h}; }
+async function fileExists(dir,name){ try{ await dir.getFileHandle(name); return true; } catch{ return false; } }
+async function copyFile(dir,srcName,dstName){
+  const src=await dir.getFileHandle(srcName); const f=await src.getFile(); const buf=await f.arrayBuffer();
+  const dst=await dir.getFileHandle(dstName,{create:true}); const w=await dst.createWritable(); await w.write(buf); await w.close();
+}
+async function writeEmptyFile(dir,name){
+  const dst=await dir.getFileHandle(name,{create:true}); const w=await dst.createWritable(); await w.write(new Uint8Array()); await w.close();
+}
+async function deleteEntry(dir,name){ await dir.removeEntry(name); }
+
+const STORAGE_KEY='renamer_user_modes_v2';
+function loadUserModes(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
+function saveUserModes(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+function refreshUserModes(){
+  const g=document.getElementById('groupCustom'); g.innerHTML='';
+  loadUserModes().forEach((m,i)=>{ const o=document.createElement('option'); o.value='user:'+i; o.textContent=m.name; g.appendChild(o); });
+}
+function getCurrentModeRecord(){
+  const val=document.getElementById('mode').value;
+  if(val.startsWith('user:')){ const idx=parseInt(val.split(':')[1],10); return {type:'user',idx,data:loadUserModes()[idx]}; }
+  return {type:'builtin',id:val};
+}
+
+let dirHandle=null,lastRows=[],lastUndo=null;
+const dateInput=document.getElementById('date');
+const hourSel=document.getElementById('hourSel');
+const patternInput=document.getElementById('pattern');
+const status=document.getElementById('status');
+const tbl=document.getElementById('tbl'), tbody=tbl.querySelector('tbody');
+
+(function buildHours(){
+  const empty=document.createElement('option'); empty.value=''; empty.textContent='(auto) — vide';
+  hourSel.appendChild(empty);
+  for(let h=0;h<24;h++){ const o=document.createElement('option'); o.value=z2(h); o.textContent=z2(h)+' h'; if(h===12) o.selected=true; hourSel.appendChild(o); }
+})();
+(function setDefaultToday(){
+  const now=new Date(); const local=new Date(now.getTime()-now.getTimezoneOffset()*60000);
+  if(!dateInput.value) dateInput.value=local.toISOString().slice(0,10);
+})();
+
+function parseIndexMap(txt){
+  const map={}; txt.split(/\\r?\\n/).forEach(line=>{
+    const m=line.match(/^\\s*(\\d+)\\s*[:=\\-]\\s*(.+?)\\s*$/);
+    if(m) map[parseInt(m[1],10)] = m[2];
+  }); return map;
+}
+function refreshMapPreview(){
+  const map=parseIndexMap(document.getElementById('mapText').value);
+  const box=document.getElementById('mapPreview'); box.innerHTML='';
+  const keys=Object.keys(map).map(k=>parseInt(k,10)).sort((a,b)=>a-b).slice(0,12);
+  keys.forEach(k=>{ const s=document.createElement('span'); s.className='chip'; s.textContent=`${k} → ${map[k]}`; box.appendChild(s); });
+  if(keys.length===0){ const s=document.createElement('span'); s.className='muted'; s.textContent='(aucune correspondance)'; box.appendChild(s); }
+}
+document.getElementById('mapText').addEventListener('input', refreshMapPreview);
+
+document.getElementById('insertToken').addEventListener('click',()=>{
+  const tok=document.getElementById('tokenSel').value; if(!tok) return;
+  const el=patternInput; const s=el.selectionStart??el.value.length, e=el.selectionEnd??el.value.length;
+  el.value=el.value.slice(0,s)+tok+el.value.slice(e); el.focus(); el.setSelectionRange(s+tok.length,s+tok.length);
+  document.getElementById('tokenSel').selectedIndex=0;
+});
+
+document.getElementById('pickDir').addEventListener('click',async ()=>{
+  try{ dirHandle=await window.showDirectoryPicker({mode:'readwrite'}); document.getElementById('folderName').textContent='Dossier sélectionné';
+       document.getElementById('apply').disabled=true; document.getElementById('undo').disabled=true; tbl.style.display='none'; status.textContent='Prêt.'; }
+  catch{ status.textContent='Sélection annulée.'; }
+});
+
+document.getElementById('mode').addEventListener('change',()=>{
+  const rec=getCurrentModeRecord();
+  if(rec.type==='builtin'){
+    const m=rec.id;
+    if(m==='kpi'){ patternInput.value='_KPI factu {REGION} {DATE:dd.MM}'; document.getElementById('exts').value='.csv'; }
+    if(m==='att'){ patternInput.value='export_attachements{LABEL}{DATE:ddMM}'; document.getElementById('exts').value='.csv'; }
+    if(m==='prod8'){ patternInput.value='Avancement prod {REGION} {DATE:dd.MM} {HOUR}h'; document.getElementById('exts').value='.xlsx'; }
+    if(m==='lot'){ patternInput.value='LOT {LOT} {REGION} S{WEEK}'; document.getElementById('exts').value='.xlsm'; }
+  } else {
+    const m=rec.data;
+    patternInput.value=m.pattern||'';
+    document.getElementById('exts').value=m.exts||'';
+    document.getElementById('start').value=m.start??1;
+    if(m.hour!==undefined) hourSel.value=m.hour;
+    document.getElementById('mapText').value = m.mapText || '';
+    refreshMapPreview();
+  }
+});
+
+document.getElementById('saveMode').addEventListener('click',()=>{
+  const name=document.getElementById('modeName').value.trim(); if(!name){ alert('Nom du mode ?'); return; }
+  const list=loadUserModes();
+  const data={ name,
+    pattern:patternInput.value.trim(),
+    exts:document.getElementById('exts').value.trim(),
+    start:parseInt(document.getElementById('start').value,10)||1,
+    hour:hourSel.value,
+    mapText: document.getElementById('mapText').value
+  };
+  const ix=list.findIndex(x=>x.name.toLowerCase()===name.toLowerCase()); if(ix>=0) list[ix]=data; else list.push(data);
+  saveUserModes(list); refreshUserModes(); const idx=list.findIndex(x=>x.name===name);
+  document.getElementById('mode').value='user:'+idx; status.textContent='Mode enregistré.';
+});
+document.getElementById('deleteMode').addEventListener('click',()=>{
+  const rec=getCurrentModeRecord(); if(rec.type!=='user'){ alert('Sélectionne un mode personnalisé.'); return; }
+  const list=loadUserModes(); const name=list[rec.idx]?.name||'mode'; if(!confirm('Supprimer « '+name+' » ?')) return;
+  list.splice(rec.idx,1); saveUserModes(list); refreshUserModes(); document.getElementById('mode').value='custom';
+  document.getElementById('mode').dispatchEvent(new Event('change'));
+});
+
+document.getElementById('preview').addEventListener('click',async ()=>{
+  if(!dirHandle){ status.textContent='Choisis un dossier d’abord.'; return; }
+  status.textContent='Aperçu en cours…'; tbody.innerHTML=''; lastRows=[];
+  const dateStr=dateInput.value; const date=dateStr?new Date(dateStr+'T00:00:00'):new Date();
+  const modeVal=document.getElementById('mode').value;
+  const mode=modeVal.startsWith('user:')?'custom':modeVal;
+  const pattern=(patternInput.value.trim()) || (mode==='kpi' ? '_KPI factu {REGION} {DATE:dd.MM}'
+                      : mode==='att' ? 'export_attachements{LABEL}{DATE:ddMM}'
+                      : mode==='prod8' ? 'Avancement prod {REGION} {DATE:dd.MM} {HOUR}h'
+                      : mode==='lot' ? 'LOT {LOT} {REGION} S{WEEK}' : '');
+  const startIndex=parseInt(document.getElementById('start').value,10)||1;
+  const filters=(document.getElementById('exts').value.trim()||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+  const userHour=hourSel.value!==''?parseInt(hourSel.value,10):null;
+  const indexMap = parseIndexMap(document.getElementById('mapText').value);
+
+  const files=[]; for await(const f of iterateFiles(dirHandle)){ const ext='.'+f.name.split('.').pop().toLowerCase(); if(!filters.length||filters.includes(ext)) files.push(f); }
+
+  if(mode==='att'){
+    const mappedOrder = []; let k=1; while(indexMap[k]){ mappedOrder.push(indexMap[k]); k++; }
+    const defaultOrder = ['AURA','Corse','CVL','DOE','IDF','PRM'];
+    const regionOrder = mappedOrder.length ? mappedOrder : defaultOrder;
+
+    const plain=files.find(f=>RE_ATT_PLAIN.test(f.name))||null;
+    const numbered=files.map(f=>({f,m:f.name.match(RE_ATT_NUM)})).filter(x=>x.m).map(x=>({f:x.f,num:parseInt(x.m[1],10)})).sort((a,b)=>a.num-b.num);
+
+    let pos=0, idxOff=0;
+    const enqueue=async(file, region, i, label)=>{
+      const base=applyTokens(pattern,{date,index:startIndex+i,region, label, origName:file.name.replace(/\\.csv$/i,''),ext:'.csv'});
+      let newName=base+'.csv'; let s=1; while(newName!==file.name && await fileExists(dirHandle,newName)){ const w=newName.slice(0,-4); newName=`${w}-${s}.csv`; s++; }
+      lastRows.push({from:file.name,to:newName});
+    };
+    if(plain){ await enqueue(plain, regionOrder[pos], 0, indexMap[startIndex] || regionOrder[pos]); pos=1; idxOff=1; }
+    for(let i=0;i<numbered.length && pos<regionOrder.length; i++,pos++){
+      const label = indexMap[startIndex + i + idxOff] || regionOrder[pos];
+      await enqueue(numbered[i].f, regionOrder[pos], i+idxOff, label);
+    }
+  }
+  else if(mode==='kpi'){
+    const kpi=files.filter(f=>RE_KPI.test(f.name)).sort((a,b)=>a.name.localeCompare(b.name,'fr')); let idx=startIndex;
+    for(const f of kpi){
+      const regionIn=REG8.find(r=>new RegExp(`\\\\b${r}\\\\b`,'i').test(f.name))||'';
+      const label = indexMap[idx] || '';
+      const base=applyTokens(pattern,{date,index:idx,region:regionIn,label,origName:f.name.replace(/\\.csv$/i,''),ext:'.csv'});
+      let newName=base+'.csv'; let s=1; while(newName!==f.name && await fileExists(dirHandle,newName)){ const w=newName.slice(0,-4); newName=`${w}-${s}.csv`; s++; }
+      lastRows.push({from:f.name,to:newName}); idx++;
+    }
+  }
+  else if(mode==='prod8'){
+    files.sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+    for(let i=0;i<files.length;i++){
+      const f=files[i]; const parts=f.name.split('.'); const ext=parts.length>1?'.'+parts.pop():'';
+      const baseName=parts.join('.'); const mh=f.name.match(RE_HOUR); const currentHour=mh?parseInt(mh[1],10):null;
+      const chosen=(userHour!=null)?userHour:(currentHour!=null?NEXT[currentHour]:12);
+      let region=''; for(let k=0;k<REG8_MATCHERS.length;k++){ if(REG8_MATCHERS[k].test(f.name)){ region=REG8[k]; break; } }
+
+      let num=''; let localPattern=pattern;
+      if(!region){ const m=f.name.match(RE_NUM); if(m){ num=m[1]; } if(num && /\\{REGION\\}/i.test(localPattern) && !/\\{NUM\\}/i.test(localPattern)){ localPattern=localPattern.replace(/\\{REGION\\}/gi,'{NUM}'); } }
+      if(region && NO_HOUR.has(region)){ localPattern=localPattern.replace(/\\s*\\{HOUR\\}h?/i,'').replace(/\\s{2,}/g,' ').trim(); }
+
+      const label = indexMap[startIndex + i] || '';
+      const base=applyTokens(localPattern,{date,index:startIndex+i,region,label,num,origName:baseName,ext,hour:z2(chosen)});
+      let newName=base+(ext?(base.endsWith('.')?'':'.')+ext.replace(/^\\./,''):''); let s=1;
+      while(newName!==f.name && await fileExists(dirHandle,newName)){ const w=ext?newName.slice(0,-ext.length-1):newName; newName=`${w}-${s}${ext?'.'+ext.replace(/^\\./,''):''}`; s++; }
+      lastRows.push({from:f.name,to:newName});
+    }
+  }
+  else if(mode==='lot'){
+    const RE_LOT=/^LOT\\s*(\\d+)\\s+(.+?)\\s+S(\\d{1,2})$/i; files.sort((a,b)=>a.name.localeCompare(b.name,'fr')); const week=isoWeek(date);
+    for(let i=0;i<files.length;i++){
+      const f=files[i]; const parts=f.name.split('.'); const ext=parts.length>1?'.'+parts.pop():'';
+      const baseName=parts.join('.'); let lot='',region=''; const m=baseName.match(RE_LOT);
+      if(m){ lot=m[1]; region=m[2].trim(); } else { const tmp=baseName.replace(/\\s*S\\d{1,2}$/i,'').trim(); region=tmp.replace(/^LOT\\s*\\d+\\s*/i,'').trim(); lot=(baseName.match(/LOT\\s*(\\d+)/i)||[])[1]||''; }
+      const label = ( (indexMap[Number(lot)] ?? indexMap[startIndex + i]) || '' );
+      const base=applyTokens(pattern,{date,week,lot,region,index:startIndex+i,label,origName:baseName,ext});
+      let newName=base+(ext?(base.endsWith('.')?'':'.')+ext.replace(/^\\./,''):''); let s=1;
+      while(newName!==f.name && await fileExists(dirHandle,newName)){ const w=ext?newName.slice(0,-ext.length-1):newName; newName=`${w}-${s}${ext?'.'+ext.replace(/^\\./,''):''}`; s++; }
+      lastRows.push({from:f.name,to:newName});
+    }
+  }
+  else {
+    files.sort((a,b)=>a.name.localeCompare(b.name,'fr')); let idx=startIndex;
+    for(const f of files){
+      const parts=f.name.split('.'); const ext=parts.length>1?'.'+parts.pop():'';
+      const baseName=parts.join('.'); const label = indexMap[idx] || '';
+      const base=applyTokens(pattern,{date,index:idx,label,origName:baseName,ext,week:isoWeek(date),hour:hourSel.value?hourSel.value:''});
+      let newName=base+(ext?(base.endsWith('.')?'':'.')+ext.replace(/^\\./,''):''); let s=1;
+      while(newName!==f.name && await fileExists(dirHandle,newName)){ const w=ext?newName.slice(0,-ext.length-1):newName; newName=`${w}-${s}${ext?'.'+ext.replace(/^\\./,''):''}`; s++; }
+      lastRows.push({from:f.name,to:newName}); idx++;
+    }
+  }
+
+  lastRows.forEach(r=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${r.from}</td><td>${r.to}</td>`; tbody.appendChild(tr); });
+  document.getElementById('apply').disabled=lastRows.length===0; document.getElementById('undo').disabled=true;
+  tbl.style.display=lastRows.length?'':'none'; lastUndo=null;
+  status.textContent=lastRows.length?`${lastRows.length} fichiers prêts.`:'Aucun fichier.';
+});
+
+document.getElementById('apply').addEventListener('click',async ()=>{
+  if(!dirHandle||!lastRows.length) return;
+  status.textContent='Renommage en cours…'; let renamed=0; const undo=[];
+  for(const r of lastRows){
+    if(r.from===r.to) continue;
+    try{ await copyFile(dirHandle,r.from,r.to); await deleteEntry(dirHandle,r.from); undo.push({from:r.to,to:r.from}); renamed++; }catch(e){ console.error(e); }
+  }
+  if(renamed>0){ lastUndo={entries:undo}; document.getElementById('undo').disabled=false; status.textContent=`Renommés : ${renamed} | Undo prêt`; }
+  else status.textContent='Aucun fichier renommé.';
+  document.getElementById('apply').disabled=true;
+});
+
+document.getElementById('undo').addEventListener('click',async ()=>{
+  if(!dirHandle||!lastUndo) return;
+  status.textContent='Annulation en cours…'; let undone=0;
+  for(const e of lastUndo.entries){ try{ await copyFile(dirHandle,e.from,e.to); await deleteEntry(dirHandle,e.from); undone++; }catch{} }
+  lastUndo=null; document.getElementById('undo').disabled=true; status.textContent=`Annulés : ${undone}`;
+});
+
+document.getElementById('createBtn').addEventListener('click', async ()=>{
+  if(!dirHandle){ alert('Choisis un dossier d’abord.'); return; }
+  const dateStr=dateInput.value; const date=dateStr?new Date(dateStr+'T00:00:00'):new Date();
+  const pattern=(patternInput.value.trim()) || ''; if(!pattern){ alert('Renseigne le patron.'); return; }
+  const startIndex=parseInt(document.getElementById('start').value,10)||1;
+  const hour = hourSel.value || '';
+  const week = isoWeek(date);
+  const exts=(document.getElementById('exts').value.trim()||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const extFirst = exts.length ? exts[0] : '';
+  const lines=document.getElementById('createList').value.split(/\\r?\\n/).map(s=>s.trim()).filter(Boolean);
+  const count = lines.length ? lines.length : (parseInt(document.getElementById('createCount').value,10)||1);
+  const indexMap=parseIndexMap(document.getElementById('mapText').value);
+
+  let created=0;
+  for(let i=0;i<count;i++){
+    const idx = startIndex+i;
+    const label = indexMap[idx] || '';
+    const base=applyTokens(pattern,{date,week,index:idx,label,origName: lines.length?lines[i]:'', ext:extFirst, hour});
+    const finalName = base + (extFirst ? (base.endsWith('.')?'':'.') + extFirst.replace(/^\\./,'') : '');
+    if(!finalName) continue;
+    if(await fileExists(dirHandle, finalName)) continue;
+    try{ await writeEmptyFile(dirHandle, finalName); created++; }catch(e){ console.error(e); }
+  }
+  status.textContent = created>0 ? `Créés : ${created}` : 'Aucun fichier créé (noms vides ou déjà existants).';
+});
+
+document.getElementById('createPreviewBtn').addEventListener('click', async ()=>{
+  if(!dirHandle){ alert('Choisis un dossier d’abord.'); return; }
+  const dateStr = dateInput.value;
+  const date = dateStr ? new Date(dateStr+'T00:00:00') : new Date();
+  const pattern = (patternInput.value.trim()) || '';
+  if(!pattern){ alert('Renseigne le patron.'); return; }
+  const startIndex = parseInt(document.getElementById('start').value,10)||1;
+  const hour = hourSel.value || '';
+  const week = isoWeek(date);
+  const exts=(document.getElementById('exts').value.trim()||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const extFirst = exts.length ? exts[0] : '';
+  const lines = document.getElementById('createList').value.split(/\\r?\\n/).map(s=>s.trim()).filter(Boolean);
+  const count = lines.length ? lines.length : (parseInt(document.getElementById('createCount').value,10)||1);
+  const indexMap = parseIndexMap(document.getElementById('mapText').value);
+  const cTbl = document.getElementById('createTbl');
+  const cBody = cTbl.querySelector('tbody'); cBody.innerHTML = '';
+  let planned = 0;
+  for(let i=0;i<count;i++){
+    const idx = startIndex + i;
+    const label = indexMap[idx] || '';
+    const base = applyTokens(pattern, { date, week, index: idx, label, origName: lines.length ? lines[i] : '', ext: extFirst, hour });
+    const finalName = base + (extFirst ? (base.endsWith('.')?'':'.') + extFirst.replace(/^\\./,'') : '');
+    const exists = finalName ? await fileExists(dirHandle, finalName) : false;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${finalName || '(nom vide)'}</td>
+                    <td>${ !finalName ? '❌ nom vide'
+                        : (exists ? '⚠️ existe déjà' : '✅ prêt') }</td>`;
+    if (!finalName) tr.style.color = '#ef4444';
+    else if (exists) tr.style.color = '#f59e0b';
+    cBody.appendChild(tr); planned++;
+  }
+  cTbl.style.display = planned ? '' : 'none';
+  status.textContent = planned ? `${planned} fichiers à créer (aperçu).` : 'Aucun fichier à créer.';
+});
+
+(function init(){
+  refreshUserModes();
+  document.getElementById('mode').dispatchEvent(new Event('change'));
+  refreshMapPreview();
+})();
+    </script>
+</body>
+</html>

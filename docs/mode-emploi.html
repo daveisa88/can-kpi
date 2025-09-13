@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Mode d’emploi — Renommage & Création</title>
+    <link rel="icon" type="image/png" href="/assets/can-kpi.png">
+    <link rel="apple-touch-icon" href="/assets/can-kpi.png">
+    <style>
+        :root {
+            --bg: #0b1020;
+            --card: #0f172a;
+            --line: #1e293b;
+            --muted: #9aa5b1;
+            --text: #e5e7eb;
+            --accent: #ff7a00;
+            --amber: #f59e0b;
+            --sky: #38bdf8;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+            background: radial-gradient(1200px 600px at 10% -10%, rgba(255,122,0,.1), transparent), radial-gradient(1000px 600px at 90% 10%, rgba(34,197,94,.08), transparent), var(--bg);
+            color: var(--text);
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 0 18px;
+        }
+
+        .title {
+            font-size: 28px;
+            letter-spacing: .3px;
+            margin: 0 0 18px;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-top: -6px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(12, 1fr);
+        }
+
+        .card {
+            grid-column: span 12;
+            background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.25);
+            backdrop-filter: blur(3px);
+        }
+
+            .card h3 {
+                margin: 0 0 8px;
+                font-size: 18px;
+            }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .pill {
+            display: inline-block;
+            font-size: 12px;
+            padding: 3px 8px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            margin-right: 6px;
+            color: #cbd5e1;
+        }
+
+        .kbd {
+            display: inline-block;
+            background: #0b1220;
+            border: 1px solid var(--line);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .steps {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .step {
+            border: 1px dashed var(--line);
+            border-radius: 14px;
+            padding: 12px;
+            background: rgba(2,6,23,.6);
+        }
+
+        .ok {
+            color: #86efac;
+        }
+
+        .warn {
+            color: #fbbf24;
+        }
+
+        .err {
+            color: #f87171;
+        }
+
+        .list {
+            margin: 8px 0 0 0;
+            padding-left: 18px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #0b1220;
+            border: 1px solid var(--line);
+            margin-right: 6px;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+        }
+
+        .cta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #0b1220;
+            border: 1px solid var(--line);
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .btn:hover {
+                border-color: #334155;
+            }
+
+            .btn.acc {
+                background: var(--accent);
+                color: #2b0e00;
+                border-color: #ff6a00;
+                font-weight: 600;
+            }
+
+        .code {
+            background: #0b1220;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 900px) {
+            .steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h1 class="title">Mode d’emploi — Renommage & Création</h1>
+        <p class="sub">Tout ce qu’il faut pour aller vite, sans se tromper.</p>
+
+        <div class="grid">
+            <div class="card">
+                <h3>1) Démarrage rapide</h3>
+                <div class="steps">
+                    <div class="step"><b>Choisir un dossier</b><ul class="list"><li>Chrome/Edge recommandé</li><li>Dossier où tu as l’écriture</li></ul></div>
+                    <div class="step"><b>Choisir un mode</b><ul class="list"><li>KPI, Attachements, Prod 8, LOT, Personnalisé</li><li>Peut enregistrer des modes</li></ul></div>
+                    <div class="step"><b>Aperçu → Renommer</b><ul class="list"><li>Aperçu fidèle</li><li>Undo dispo</li></ul></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>2) Tokens</h3>
+                <div class="badge mono">{DATE:dd.MM}</div>
+                <div class="badge mono">{DATE:ddMM}</div>
+                <div class="badge mono">{WEEK}</div>
+                <div class="badge mono">{INDEX}</div>
+                <div class="badge mono">{INDEX:3}</div>
+                <div class="badge mono">{LABEL}</div>
+                <div class="badge mono">{REGION}</div>
+                <div class="badge mono">{HOUR}</div>
+                <div class="badge mono">{LOT}</div>
+                <div class="badge mono">{NUM}</div>
+                <div class="badge mono">{NAME}</div>
+                <div class="badge mono">{EXT}</div>
+                <p class="muted">Le mapping <b>Index→Libellé</b> nourrit <code>{LABEL}</code>.</p>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>3) Création</h3>
+                <div class="steps">
+                    <div class="step">
+                        <b>Par liste</b><div class="code">
+                            AURA
+                            Corse
+                            CVL
+                            DOE
+                            IDF
+                            PRM
+                        </div>
+                    </div>
+                    <div class="step"><b>Par index</b><p>Lot {INDEX} fichier</p></div>
+                    <div class="step"><b>Sécurité</b><ul class="list"><li>✅ prêt</li><li>⚠️ existe déjà</li><li>❌ nom vide</li></ul></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>FAQ</h3>
+                <ul class="list">
+                    <li>“.csv/.xlsm” seul ? → patron vide (ex. {LABEL} sans mapping) → compléter la table ou ajouter {NAME}/{INDEX}</li>
+                    <li>Heure erronée ? → forcer via “Heure cible (24 h)”</li>
+                    <li>Conflits ? → suffixes -1, -2…</li>
+                </ul>
+                <div class="cta" style="margin-top:10px">
+                    <a class="btn acc" href="/apps/renamer.html">Ouvrir l’outil</a>
+                    <a class="btn" href="/index.html">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+"""
+(docs / 'mode-emploi.html').write_text(mode_emploi_html, encoding='utf-8')
+
+# ---------- docs/landing.html (page produit) ----------
+landing_html = """
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CAN KPI — Renommage & Création de fichiers</title>
+    <link rel="icon" type="image/png" href="/assets/can-kpi.png">
+    <link rel="apple-touch-icon" href="/assets/can-kpi.png">
+    <style>
+        :root {
+            --bg: #0b1020;
+            --text: #e5e7eb;
+            --muted: #9aa5b1;
+            --line: #1f2937;
+            --brand: #ff7a00;
+            --brand-strong: #ff6a00;
+            --brand-soft: rgba(255,122,0,.15);
+            --card: #0f172a;
+            --chip: #0b1220;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter,system-ui,Segoe UI,Roboto,Arial;
+            color: var(--text);
+            background: radial-gradient(1000px 700px at 10% -10%, var(--brand-soft), transparent), radial-gradient(900px 600px at 100% 0%, rgba(255,122,0,.08), transparent), var(--bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        .wrap {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+        }
+
+        .hero-inner {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 28px;
+            align-items: center;
+            padding: 42px 0 26px
+        }
+
+        @media (max-width: 980px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+                padding: 34px 0 12px
+            }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: #111 url('/assets/can-kpi.png') center/cover no-repeat;
+            box-shadow: 0 12px 36px rgba(0,0,0,.35)
+        }
+
+        .title {
+            font-size: 30px;
+            margin: 0
+        }
+
+        .sub {
+            color: var(--muted);
+            margin: 8px 0 18px
+        }
+
+        .cta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: #0b1220
+        }
+
+            .btn:hover {
+                border-color: #334155
+            }
+
+            .btn.primary {
+                background: var(--brand);
+                border-color: var(--brand-strong);
+                color: #2a0d00;
+                font-weight: 800;
+                box-shadow: 0 10px 28px rgba(255,122,0,.25)
+            }
+
+        .metrics {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            flex-wrap: wrap
+        }
+
+        .chip {
+            background: var(--chip);
+            border: 1px solid var(--line);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            color: #cbd5e1
+        }
+
+        .hero-card {
+            background: #0b1220;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px;
+            min-height: 230px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.35)
+        }
+
+        .shot {
+            height: 210px;
+            border-radius: 12px;
+            border: 1px dashed #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a3b0bf;
+            background: linear-gradient(180deg,#0f172a,#0c1324)
+        }
+
+        .section {
+            padding: 34px 0
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 16px
+        }
+
+        @media (max-width: 980px) {
+            .cards {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 16px
+        }
+
+            .card h3 {
+                margin: 0 0 6px
+            }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .list {
+            margin: 8px 0 0 0;
+            padding-left: 18px
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th, td {
+            border: 1px solid #223042;
+            padding: 10px 12px;
+            font-size: 14px
+        }
+
+        th {
+            background: #0b1220
+        }
+
+        footer {
+            padding: 18px 0;
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            margin-top: 28px
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="wrap hero-inner">
+            <div>
+                <div class="brand">
+                    <div class="logo" aria-hidden="true"></div>
+                    <h1 class="title">CAN KPI — Renommage & Création de fichiers</h1>
+                </div>
+                <p class="sub">Un outil moderne, local et ultra-rapide pour renommer des lots (KPI, attachements, prod régions, LOT semaine) et créer des fichiers à la volée. Zéro upload, zéro installation.</p>
+                <div class="cta">
+                    <a class="btn primary" href="/apps/renamer.html">🚀 Ouvrir l’outil</a>
+                    <a class="btn" href="/docs/mode-emploi.html" target="_blank">📖 Mode d’emploi</a>
+                    <a class="btn" href="/index.html">🏠 Dashboard</a>
+                </div>
+                <div class="metrics">
+                    <span class="chip">100% local</span>
+                    <span class="chip">Presets & patrons</span>
+                    <span class="chip">Création de fichiers</span>
+                    <span class="chip">Dark UI</span>
+                </div>
+            </div>
+            <div class="hero-card">
+                <div class="shot">Aperçu renaming — capture à insérer si besoin</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="cards">
+                <div class="card"><h3>🔒 100% local</h3><p class="muted">Rien n’est envoyé en ligne. API de fichiers locale.</p></div>
+                <div class="card"><h3>⚡ Ultra-rapide</h3><p class="muted">Aperçu immédiat, collisions gérées automatiquement.</p></div>
+                <div class="card"><h3>🧩 Flexible</h3><p class="muted">Tokens {DATE}, {HOUR}, {INDEX}, {LABEL}, {NAME}… + mapping Index→Libellé.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="cards">
+                <div class="card"><h3>📊 KPI factu</h3><ul class="list"><li>_KPI factu {REGION} {DATE:dd.MM}</li><li>.csv</li></ul></div>
+                <div class="card"><h3>📎 Attachements</h3><ul class="list"><li>export_attachements{LABEL}{DATE:ddMM}</li><li>Ordre via Index→Libellé</li></ul></div>
+                <div class="card"><h3>🗺️ Prod 8 régions</h3><ul class="list"><li>Détection région</li><li>Retrait heure CVL/DOE/IDF/PRM</li></ul></div>
+                <div class="card"><h3>📦 LOT semaine</h3><ul class="list"><li>LOT {LOT} {REGION} S{WEEK}</li><li>Semaine ISO</li></ul></div>
+                <div class="card"><h3>🆕 Création</h3><ul class="list"><li>Liste → {NAME}</li><li>Index → quantité/départ</li></ul></div>
+                <div class="card"><h3>🧠 Tokens</h3><p class="muted">{DATE:dd.MM}, {WEEK}, {INDEX:3}, {LABEL}, {HOUR}, {NAME}…</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="card">
+                <h3>Comparatif rapide</h3>
+                <div style="overflow:auto;margin-top:8px">
+                    <table>
+                        <tr><th>Critère</th><th>CAN KPI</th><th>Logiciels PC</th><th>Outils web</th></tr>
+                        <tr><td>Confidentialité</td><td>✅ 100% local</td><td>✅ Local</td><td>❌ Upload</td></tr>
+                        <tr><td>Installation</td><td>✅ Aucune</td><td>❌ À installer</td><td>✅ Aucune</td></tr>
+                        <tr><td>Tokens & Presets</td><td>✅ Flexible</td><td>⚠️ Complexe</td><td>❌ Limité</td></tr>
+                        <tr><td>Création fichiers</td><td>✅ Oui</td><td>❌ Non</td><td>❌ Non</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="wrap">
+            <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                <div>
+                    <h3>Prêt ?</h3>
+                    <p class="muted">Ouvre l’outil, choisis ton dossier, clique “Aperçu”…</p>
+                </div>
+                <div class="cta">
+                    <a class="btn primary" href="/apps/renamer.html">🚀 Lancer l’outil</a>
+                    <a class="btn" href="/docs/mode-emploi.html" target="_blank">📖 Aide</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="wrap">CAN KPI — orange fibre • <a href="/index.html">Dashboard</a></div>
+    </footer>
+</body>
+</html>
