@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Mode d’emploi — Renommage & Création</title>
+    <link rel="icon" type="image/png" href="/assets/can-kpi.png">
+    <link rel="apple-touch-icon" href="/assets/can-kpi.png">
     <style>
         :root {
             --bg: #0b1020;
@@ -11,7 +13,7 @@
             --line: #1e293b;
             --muted: #9aa5b1;
             --text: #e5e7eb;
-            --accent: #22c55e;
+            --accent: #ff7a00;
             --amber: #f59e0b;
             --sky: #38bdf8;
         }
@@ -19,7 +21,7 @@
         body {
             margin: 0;
             font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
-            background: radial-gradient(1200px 600px at 10% -10%, rgba(56,189,248,.1), transparent), radial-gradient(1000px 600px at 90% 10%, rgba(34,197,94,.08), transparent), var(--bg);
+            background: radial-gradient(1200px 600px at 10% -10%, rgba(255,122,0,.1), transparent), radial-gradient(1000px 600px at 90% 10%, rgba(34,197,94,.08), transparent), var(--bg);
             color: var(--text);
         }
 
@@ -32,12 +34,12 @@
         .title {
             font-size: 28px;
             letter-spacing: .3px;
-            margin: 0 0 18px;
+            margin: 0 0 8px;
         }
 
         .sub {
             color: var(--muted);
-            margin-top: -6px;
+            margin: 0 0 12px;
         }
 
         .grid {
@@ -149,8 +151,8 @@
 
             .btn.acc {
                 background: var(--accent);
-                color: #04210d;
-                border-color: #16a34a;
+                color: #2b0e00;
+                border-color: #ff6a00;
                 font-weight: 600;
             }
 
@@ -170,6 +172,77 @@
     </style>
 </head>
 <body>
-    <div class="wrap"> <h1 class="title">Mode d’emploi — Renommage & Création</h1> <p class="sub">Tout ce qu’il faut pour aller vite, sans se tromper. Copies d’écran non nécessaires 😉</p> <!-- Raccourcis --> <div class="grid"> <div class="card"> <h3>Raccourcis utiles</h3> <div class="cta"> <a class="btn" href="#" onclick="history.back()">⬅︎ Retour à l’appli</a> <a class="btn acc" href="#presets">Presets conseillés</a> <a class="btn" href="#tokens">Jetons disponibles</a> <a class="btn" href="#rename">Renommer</a> <a class="btn" href="#create">Créer</a> <a class="btn" href="#faq">Dépannage</a> </div> </div> </div> <!-- Démarrage --> <div class="grid"> <div class="card"> <h3>1) Démarrage rapide</h3> <div class="steps"> <div class="step"> <b>Choisir un dossier</b> <ul class="list"> <li>Utilise Chrome/Edge. Les dossiers systèmes Windows peuvent être refusés.</li> <li>Tu dois avoir l’écriture dans ce dossier.</li> </ul> </div> <div class="step"> <b>Choisir un mode</b> <ul class="list"> <li><span class="pill">KPI factu</span><span class="pill">Attachements</span><span class="pill">Prod 8</span><span class="pill">LOT</span> ou <span class="pill">Personnalisé</span></li> <li>Tu peux enregistrer tes propres <i>modes</i>.</li> </ul> </div> <div class="step"> <b>Aperçu puis Renommer</b> <ul class="list"> <li><b>Aperçu</b> montre exactement les nouveaux noms.</li> <li><b>Renommer</b> applique. <span class="kbd">Undo</span> disponible.</li> </ul> </div> </div> </div> </div> <!-- Presets --> <div id="presets" class="grid"> <div class="card"> <h3>2) Presets conseillés</h3> <p class="muted">Chaque preset remplit mode, patron, extensions, heure, mapping.</p> <ul class="list"> <li><b>KPI AURA</b> — _KPI factu AURA {DATE:dd.MM} (.csv)</li> <li><b>Attachements 6 régions</b> — export_attachements{LABEL}{DATE:ddMM} (.csv) + mapping 1..6</li> <li><b>Prod 8 régions 12h</b> — Avancement prod {REGION} {DATE:dd.MM} {HOUR}h (.xlsx, H=12)</li> <li><b>Prod 63/74 décalage</b> — Avancement prod {NUM} {DATE:dd.MM} {HOUR}h (détecte 63/74)</li> <li><b>LOT FLASH Semaine</b> — LOT {LOT} {REGION} S{WEEK} (.xlsm)</li> <li><b>Créer 6 régions</b> — Avancement prod {NAME} {DATE:dd.MM} + liste AURA…PRM</li> </ul> <p class="muted">Dans l’appli, clique les boutons “Presets 1-clic”.</p> </div> </div> <!-- Jetons --> <div id="tokens" class="grid"> <div class="card"> <h3>3) Jetons rapides</h3> <div> <span class="badge mono">{DATE:dd.MM}</span> <span class="badge mono">{DATE:ddMM}</span> <span class="badge mono">{WEEK}</span> <span class="badge mono">{INDEX}</span> <span class="badge mono">{INDEX:3}</span> <span class="badge mono">{LABEL}</span> <span class="badge mono">{REGION}</span> <span class="badge mono">{HOUR}</span> <span class="badge mono">{LOT}</span> <span class="badge mono">{NUM}</span> <span class="badge mono">{NAME}</span> <span class="badge mono">{EXT}</span> </div> <p class="muted">Le mapping <b>Index→Libellé</b> nourrit <code>{LABEL}</code>. En LOT, si on trouve un numéro de LOT, il est prioritaire.</p> </div> </div> <!-- Renommer --> <div id="rename" class="grid"> <div class="card"> <h3>4) Renommer</h3> <ol class="list"> <li>Sélectionne le <b>dossier</b>.</li> <li>Choisis le <b>mode</b> (ou “Personnalisé”).</li> <li>Régle <b>Heure</b> (auto/12 h), <b>Date</b>, <b>Extensions</b>.</li> <li>Complète la <b>table Index→Libellé</b> si tu utilises <code>{LABEL}</code>.</li> <li>Clique <b>Aperçu</b> → vérifie les colonnes.</li> <li>Clique <b>Renommer</b>. Conflits → suffixes “-1, -2…”.</li> <li>Besoin de revenir ? <b>Annuler (Undo)</b>.</li> </ol> <p class="muted"><b>Prod 8</b> : l’heure est retirée pour CVL/DOE/IDF/PRM. <b>Attachements</b> : ordre par mapping si défini, sinon AURA→PRM.</p> </div> </div> <!-- Créer --> <div id="create" class="grid"> <div class="card"> <h3>5) Créer des fichiers</h3> <div class="steps"> <div class="step"> <b>Avec liste</b> <p>Patron : <span class="mono">Avancement prod {NAME} {DATE:dd.MM}</span></p> <div class="code">AURA Corse CVL DOE IDF PRM</div> </div> <div class="step"> <b>Sans liste</b> <p>Patron : <span class="mono">Lot {INDEX} fichier</span>, Quantité=3</p> <p>Résultat : Lot 1/2/3 fichier</p> </div> <div class="step"> <b>Sécurité</b> <ul class="list"> <li><span class="ok">✅ prêt</span> si libre</li> <li><span class="warn">⚠️ existe déjà</span> si conflit</li> <li><span class="err">❌ nom vide</span> si patron ne produit rien</li> </ul> </div> </div> <p class="muted">L’aperçu création n’écrit rien. “Créer” dépose des fichiers vides.</p> </div> </div> <!-- FAQ --> <div id="faq" class="grid"> <div class="card"> <h3>6) Dépannage</h3> <ul class="list"> <li><b>Je vois juste “.csv/.xlsm”.</b> → ton patron ne produit rien (ex. <code>{LABEL}</code> vide). Remplis la table, change Index départ, ou ajoute <code>{NAME}</code>/<code>{INDEX}</code>.</li> <li><b>Impossible d’ouvrir le dossier.</b> → Choisis un dossier utilisateur (Bureau/Documents), pas un dossier système.</li> <li><b>Mauvaise heure.</b> → force l’heure via “Heure cible (24 h)”.</li> <li><b>Conflits de noms.</b> → suffixes automatiques “-1”, “-2”, …</li> <li><b>Mes modes persos ont disparu.</b> → localStorage du navigateur ; si tu changes de profil/PC, il faut les recréer.</li> </ul> </div> </div> <div class="grid"> <div class="card"> <h3>7) Tips pro</h3> <ul class="list"> <li>Enregistre tes combinaisons en <b>modes personnalisés</b> (nom lisible).</li> <li>Les presets 1-clic te font gagner 80% du temps ; ajuste seulement l’exception.</li> <li>Pour les attachements, la table <b>Index→Libellé</b> impose ton ordre (remplace AURA→PRM).</li> <li>En LOT, mapping par numéro de LOT en priorité (si détecté).</li> </ul> </div> </div> </div>
+    <div class="wrap">
+        <h1 class="title">Mode d’emploi — Renommage & Création</h1>
+        <div class="cta" style="margin:0 0 10px">
+            <a class="btn" href="/index.html">⬅︎ Retour à l’index</a>
+        </div>
+        <p class="sub">Tout ce qu’il faut pour aller vite, sans se tromper.</p>
+
+        <div class="grid">
+            <div class="card">
+                <h3>1) Démarrage rapide</h3>
+                <div class="steps">
+                    <div class="step"><b>Choisir un dossier</b><ul class="list"><li>Chrome/Edge recommandé</li><li>Dossier où tu as l’écriture</li></ul></div>
+                    <div class="step"><b>Choisir un mode</b><ul class="list"><li>KPI, Attachements, Prod 8, LOT, Personnalisé</li><li>Peut enregistrer des modes</li></ul></div>
+                    <div class="step"><b>Aperçu → Renommer</b><ul class="list"><li>Aperçu fidèle</li><li>Undo dispo</li></ul></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>2) Tokens</h3>
+                <div class="badge mono">{DATE:dd.MM}</div>
+                <div class="badge mono">{DATE:ddMM}</div>
+                <div class="badge mono">{WEEK}</div>
+                <div class="badge mono">{INDEX}</div>
+                <div class="badge mono">{INDEX:3}</div>
+                <div class="badge mono">{LABEL}</div>
+                <div class="badge mono">{REGION}</div>
+                <div class="badge mono">{HOUR}</div>
+                <div class="badge mono">{LOT}</div>
+                <div class="badge mono">{NUM}</div>
+                <div class="badge mono">{NAME}</div>
+                <div class="badge mono">{EXT}</div>
+                <p class="muted">Le mapping <b>Index→Libellé</b> nourrit <code>{LABEL}</code>.</p>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>3) Création</h3>
+                <div class="steps">
+                    <div class="step">
+                        <b>Par liste</b><div class="code">
+                            AURA
+                            Corse
+                            CVL
+                            DOE
+                            IDF
+                            PRM
+                        </div>
+                    </div>
+                    <div class="step"><b>Par index</b><p>Lot {INDEX} fichier</p></div>
+                    <div class="step"><b>Sécurité</b><ul class="list"><li>✅ prêt</li><li>⚠️ existe déjà</li><li>❌ nom vide</li></ul></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>FAQ</h3>
+                <ul class="list">
+                    <li>“.csv/.xlsm” seul ? → patron vide (ex. {LABEL} sans mapping) → compléter la table ou ajouter {NAME}/{INDEX}</li>
+                    <li>Heure erronée ? → forcer via “Heure cible (24 h)”</li>
+                    <li>Conflits ? → suffixes -1, -2…</li>
+                </ul>
+                <div class="cta" style="margin-top:10px">
+                    <a class="btn acc" href="/apps/renamer.html">Ouvrir l’outil</a>
+                    <a class="btn" href="/index.html">Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
