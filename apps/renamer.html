@@ -84,14 +84,6 @@
                 cursor: pointer;
             }
 
-            input[type="date"]::-webkit-datetime-edit,
-            input[type="date"]::-webkit-datetime-edit-text,
-            input[type="date"]::-webkit-datetime-edit-month-field,
-            input[type="date"]::-webkit-datetime-edit-day-field,
-            input[type="date"]::-webkit-datetime-edit-year-field {
-                color: #e5e7eb;
-            }
-
         button {
             padding: 10px 14px;
             border-radius: 12px;
@@ -167,13 +159,6 @@
             font-size: 12px;
         }
 
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 140px 140px;
-            gap: 10px;
-            align-items: center;
-        }
-
         .row-inline {
             display: flex;
             gap: 8px;
@@ -226,6 +211,7 @@
                 <div class="row-inline" style="gap:10px; flex-wrap:wrap;">
                     <select id="mode" style="min-width:320px;">
                         <optgroup label="Modes intégrés">
+                            <option value="free">Tout le dossier (libre)</option>
                             <option value="kpi">KPI factu</option>
                             <option value="att">export_attachements</option>
                             <option value="prod8">Avancement prod (8 régions)</option>
@@ -410,14 +396,12 @@
         function isNativeFS(h) { return !!h && typeof h.getFileHandle === 'function'; }
 
         async function* iterateFiles(dir) {
-            // Native: DirectoryHandle.entries()
             if (isNativeFS(dir)) {
                 for await (const [name, handle] of dir.entries()) {
                     if (handle.kind === "file") yield { name, handle };
                 }
                 return;
             }
-            // Fallback: dir.entries() défini par nous (voir plus bas)
             if (dir && typeof dir.entries === 'function') {
                 for await (const item of dir.entries()) {
                     if (item && item.handle && item.handle.kind === 'file') yield item;
@@ -426,7 +410,7 @@
         }
 
         async function fileExists(dir, name) {
-            if (!isNativeFS(dir)) return false; // pas d’API → on considère "non existant" pour l’aperçu
+            if (!isNativeFS(dir)) return false;
             try { await dir.getFileHandle(name); return true; } catch { return false; }
         }
         async function copyFile(dir, srcName, dstName) {
@@ -527,7 +511,6 @@
                         console.warn(e);
                         status.textContent = 'Impossible d’ouvrir le dossier (permission refusée ?).';
                     }
-                    // Si annulé, ne bascule pas en fallback automatiquement.
                     return;
                 }
             }
@@ -539,7 +522,6 @@
         fallbackInput.addEventListener('change', async () => {
             const files = Array.from(fallbackInput.files || []);
             if (!files.length) return;
-            // pseudo-handle compatible avec iterateFiles()
             dirHandle = {
                 async *entries() {
                     for (const f of files) {
@@ -555,6 +537,10 @@
             const rec = getCurrentModeRecord();
             if (rec.type === 'builtin') {
                 const m = rec.id;
+                if (m === 'free') {                 // <<< NOUVEAU MODE
+                    patternInput.value = '{NAME}';
+                    document.getElementById('exts').value = ''; // vide = tous les fichiers
+                }
                 if (m === 'kpi') { patternInput.value = '_KPI factu {REGION} {DATE:dd.MM}'; document.getElementById('exts').value = '.csv'; }
                 if (m === 'att') { patternInput.value = 'export_attachements{LABEL}{DATE:ddMM}'; document.getElementById('exts').value = '.csv'; }
                 if (m === 'prod8') { patternInput.value = 'Avancement prod {REGION} {DATE:dd.MM} {HOUR}h'; document.getElementById('exts').value = '.xlsx'; }
@@ -598,16 +584,26 @@
             const dateStr = dateInput.value; const date = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
             const modeVal = document.getElementById('mode').value;
             const mode = modeVal.startsWith('user:') ? 'custom' : modeVal;
+
+            // Valeurs par défaut selon le mode
             const pattern = (patternInput.value.trim()) || (mode === 'kpi' ? '_KPI factu {REGION} {DATE:dd.MM}'
                 : mode === 'att' ? 'export_attachements{LABEL}{DATE:ddMM}'
                     : mode === 'prod8' ? 'Avancement prod {REGION} {DATE:dd.MM} {HOUR}h'
-                        : mode === 'lot' ? 'LOT {LOT} {REGION} S{WEEK}' : '');
+                        : mode === 'lot' ? 'LOT {LOT} {REGION} S{WEEK}'
+                            : '{NAME}');
             const startIndex = parseInt(document.getElementById('start').value, 10) || 1;
-            const filters = (document.getElementById('exts').value.trim() || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            // Filtre extensions : en mode "free" => vide => tous les fichiers
+            const rawExt = (document.getElementById('exts').value.trim() || '');
+            const filters = (mode === 'free') ? [] : rawExt.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
             const userHour = hourSel.value !== '' ? parseInt(hourSel.value, 10) : null;
             const indexMap = parseIndexMap(document.getElementById('mapText').value);
 
-            const files = []; for await (const f of iterateFiles(dirHandle)) { const ext = '.' + f.name.split('.').pop().toLowerCase(); if (!filters.length || filters.includes(ext)) files.push(f); }
+            const files = []; for await (const f of iterateFiles(dirHandle)) {
+                const ext = '.' + f.name.split('.').pop().toLowerCase();
+                if (!filters.length || filters.includes(ext)) files.push(f);
+            }
 
             if (mode === 'att') {
                 const mappedOrder = []; let k = 1; while (indexMap[k]) { mappedOrder.push(indexMap[k]); k++; }
@@ -672,6 +668,7 @@
                 }
             }
             else {
+                // "custom" et "free" tombent ici : on applique juste le patron à tous les fichiers sélectionnés
                 files.sort((a, b) => a.name.localeCompare(b.name, 'fr')); let idx = startIndex;
                 for (const f of files) {
                     const parts = f.name.split('.'); const ext = parts.length > 1 ? '.' + parts.pop() : '';
@@ -764,7 +761,7 @@
                 const exists = isNativeFS(dirHandle) ? (finalName ? await fileExists(dirHandle, finalName) : false) : false;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td>${finalName || '(nom vide)'}</td>
-                        <td>${!finalName ? '❌ nom vide'
+                                <td>${!finalName ? '❌ nom vide'
                         : (exists ? '⚠️ existe déjà' : (isNativeFS(dirHandle) ? '✅ prêt' : 'ℹ️ aperçu'))}</td>`;
                 if (!finalName) tr.style.color = '#ef4444';
                 else if (exists) tr.style.color = '#f59e0b';
@@ -778,9 +775,9 @@
             refreshUserModes();
             document.getElementById('mode').dispatchEvent(new Event('change'));
             refreshMapPreview();
-            // Si l’API n’est pas dispo d’emblée (Safari/Firefox/iOS)
             if (!apiSupported()) setReadOnlyUI(true);
         })();
     </script>
 </body>
 </html>
+
